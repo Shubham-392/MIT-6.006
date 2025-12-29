@@ -72,8 +72,6 @@ class BSTree(BinaryTree):
         return f"BST({items})"
 
 
-
-
 class KeyInt:
     def __init__(self, value, key):
         self.key = key
