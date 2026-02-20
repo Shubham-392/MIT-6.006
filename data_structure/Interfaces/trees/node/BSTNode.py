@@ -1,5 +1,7 @@
 from .binaryNode import BinaryNode
 
+
+# No-rebalncing tree node
 class BSTNode(BinaryNode):
 
     def subtree_find(self, k):

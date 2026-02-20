@@ -21,6 +21,11 @@ class AVLNode:
         return height(self.right) - height(self.left)
         
     def subtree_iter(self):
+        """
+            Walk the tree In-Order traversal order i.e., `Left -> Root -> Right`
+            
+            efficient for large trees as it yields nodes.
+        """
         if self.left:
             yield from self.left.subtree_iter()
         yield self
@@ -178,3 +183,31 @@ class AVLNode:
             E.parent = D
         self.subtree_update()
         D.subtree_update()
+        
+        
+class SIZE_NODE(AVLNode):
+    
+    def subtree_update(self):
+        super().subtree_update()
+        self.size = 1
+        if self.left:
+            self.size += self.left.size
+        if self.right:
+            self.size += self.right.size
+            
+    def subtree_at(self, idx:int):
+        assert 0 <= idx
+        if self.left: 
+            L_size = self.left.size
+            
+        else:
+            L_size = 0
+            
+        if idx < L_size:
+            return self.left.subtree_at(idx)
+        elif idx == L_size:
+            return self
+        else:
+            # look in right subtree from idx to be 0 in next recursion
+            # i.e., idx=0 for right subtree as we are recursing for right subtree
+            return self.right.subtree_at(idx - L_size - 1)
