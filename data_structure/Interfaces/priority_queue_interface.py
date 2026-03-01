@@ -295,7 +295,7 @@ class PQ_BinaryHeapInPlace(PriorityQueue_ME):
             
             for _ in range(items_in_level):
                 if i < n:
-                    line += f"{spacer}{A[i].key}"
+                    line += f"{spacer}{self.A[i].key}"
                     i += 1
             print(line)
         print("--------------------------\n")
