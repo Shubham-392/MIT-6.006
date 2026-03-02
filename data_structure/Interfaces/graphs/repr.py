@@ -68,3 +68,80 @@ def unweighted_shortest_path(Adj, start_v, target_v):
         
     return path[::-1]                                            # O(V) return reversed path
     
+# NOTE: All vertices are labelled 
+# the parent array returned has length |V |,v∈ V
+# depth-first search runs in O(|V | + |E|) time.
+# This function only visits the connected nodes
+# Not visiting the nodes which is not directly connected to any node
+# So, we need a full-method to visit the the nodes that has not been discovered by the search
+# In- below implementation you will find a method of `full_dfs(Adj)`
+def dfs(Adj, start_v, parent=None, order=None):      # Adj: adjacency list, s: start
+    if parent is None:
+        parent = {v:None for v in Adj.keys()}
+        parent[start_v] = start_v
+        order = []
+    
+    for v in Adj[start_v]:          # O(Adj[s]) loop over neighbors
+        if parent[v] is None:
+            parent[v] = start_v
+            dfs(Adj, v, parent, order)      # Recursive call
+            
+    order.append(start_v)                           # O(1) amortized
+    
+    return parent, order
+    
+# Such a search is conceptually equivalent to adding an auxiliary vertex
+# with an outgoing edge to every vertex in the graph and then running breadth-first or depth-first
+# search from the added vertex
+# Python code searching an entire graph via depth-first search is given
+# below
+def full_dfs(Adj):
+    parent = {v:None for v in Adj.keys()}
+    order = []
+    
+    for v in range(len(Adj)):
+        if parent[v] is None:
+            parent[v] = v
+            dfs(Adj, v, parent, order)
+            
+    return parent, order
+    
+    
+    
+# Cycle-detection in a graph
+# i.e., track a backedge
+
+def cycle_detection_dfs(
+    Adj, 
+    start_v, 
+    parent=None, 
+    order=None,
+    ancestors=None,
+    cycles=None
+):
+    if parent is None:
+        parent = {v:None for v in Adj.keys()}
+        parent[start_v] = start_v
+        order = []
+        back_edges = [0]
+        #initialize the ancestor set to keep track of the 
+        # active nodes
+        ancestors = set()
+    # add very first visiting node    
+    ancestors.add(start_v)
+    for v in Adj[start_v]:          # O(Adj[s]) loop over neighbors
+        if parent[v] is None:
+            parent[v] = start_v
+            cycle_detection_dfs(Adj, v, parent, order)      # Recursive call
+        
+        elif v in ancestors:
+            # Backedge found 
+            back_edges[0] += 1
+            
+    order.append(start_v)                           # O(1) amortized
+    # When backtracking remove the ancestors as we have visited the node 
+    # and no sense to keep in active list
+    # So, better to remove them 
+    ancestors.remove(start_v)
+    return back_edges[0]
+    
